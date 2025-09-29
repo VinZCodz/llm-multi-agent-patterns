@@ -12,5 +12,5 @@
             }            
         }
     },
-    "postCreateCommand": "npm install -g bun && mkdir src && touch src/index.ts && touch .env.example && touch .env"
+    "postCreateCommand": "npm install -g bun && bun install && touch .env"
 }
