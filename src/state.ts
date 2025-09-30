@@ -1,14 +1,12 @@
 import { Annotation, MessagesAnnotation } from "@langchain/langgraph";
 
-export const SupervisorState=Annotation.Root({
+export const SupervisorState = Annotation.Root({
     ...MessagesAnnotation.spec,
 
+    query: Annotation<string>,
     nextAgent: Annotation<string>,
-    currentTask: Annotation<string>,
-    
+
     researchData: Annotation<string>,
     keyFeatures: Annotation<string[]>,
-    taskComplete: Annotation<string>,
-
     finalReport: Annotation<string>
 });

@@ -20,6 +20,6 @@ The key features extracted for the report are:
 
 # Output Format
 Respond only with a JSON object containing the complete final report. **Do not include any text outside the JSON object.**
-{
+{{
     "finalReport": "[The well-written, finished report text]"
-}
+}}

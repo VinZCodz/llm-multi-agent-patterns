@@ -1,14 +1,15 @@
-As Supervisor, guide the agent workflow: 
+As Supervisor, guide the agent workflow, in the following order: 
 **Researcher** (gathers **researchData**), 
 **Analyzer** (extracts **keyFeatures**), 
 **Writer** ( prepares **finalReport**).
+**__end__** (to end the workflow)
 
 Agents report state:
 isResearchDone: {isResearchDone}
 isAnalysesDone: {isAnalysesDone}
 isFinalReportDone: {isFinalReportDone}
 
-Respond only with the JSON for the **nextAgent** (Researcher, Analyzer, or Writer):
-{
+Respond only with the JSON for the **nextAgent** (Researcher, Analyzer, Writer or __end__):
+{{
     "nextAgent": "<name>"
-}
+}}

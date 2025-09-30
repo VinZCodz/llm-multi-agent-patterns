@@ -7,6 +7,6 @@ You are the **Researcher** agent. Your sole task is to gather comprehensive and 
 
 # Output Format
 Respond only with a JSON object containing the compiled research data. **Do not include any text outside the JSON object.**
-{
+{{
     "researchData": "[Compiled, structured research findings in a single string]"
-}
+}}

@@ -1,9 +1,9 @@
 {
   "name": "llm_multi_agent",
-  "module": "src/index.ts",
+  "module": "src/driver.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun run src/index.ts"
+    "dev": "bun run src/driver.ts"
   },
   "private": true,
   "devDependencies": {

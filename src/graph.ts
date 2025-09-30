@@ -4,21 +4,30 @@ import *  as model from "./model.ts"
 import fs from "fs/promises";
 import { PromptTemplate } from "@langchain/core/prompts";
 
+let graphStarted = false;
+
 const Supervisor = async (state: typeof SupervisorState.State) => {
     const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/prompts/Supervisor.txt", "utf-8")));
-
     const formattedPrompt = await promptFromTemplate.format({
-      isResearchDone: state.researchData?,
-      isAnalysesDone: state.keyFeatures.Any(),
-      isFinalReportDone: state.finalReport?
+        isResearchDone: state.researchData?.length !== 0,
+        isAnalysesDone: state.keyFeatures?.length !== 0,
+        isFinalReportDone: state.finalReport?.length !== 0
     });
 
-    const response=model.SupervisorModel.invoke(
+    const response = await model.SupervisorModel.invoke(
         [formattedPrompt],
         { response_format: { type: 'json_object' } }
     );
-
     const responseJson = JSON.parse(response.content as string);
+
+    if (!graphStarted) {
+        graphStarted = true;
+
+        return {
+            query: state.messages.at(-1)?.content,
+            nextAgent: responseJson.nextAgent
+        }
+    }
 
     return {
         nextAgent: responseJson.nextAgent
@@ -27,35 +36,33 @@ const Supervisor = async (state: typeof SupervisorState.State) => {
 
 const Researcher = async (state: typeof SupervisorState.State) => {
     const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/prompts/Researcher.txt", "utf-8")));
+    const formattedPrompt = await promptFromTemplate.format({ query: state.query });
 
-    const formattedPrompt = await promptFromTemplate.format({query: ,});
-
-    const response=model.ResearcherModel.invoke(
+    const response = await model.ResearcherModel.invoke(
         [formattedPrompt],
         { response_format: { type: 'json_object' } }
     );
-
     const responseJson = JSON.parse(response.content as string);
 
     return {
-        researchData: responseJson.researchData
+        researchData: responseJson.researchData,
+        nextAgent: 'Supervisor'
     }
 }
 
 const Analyzer = async (state: typeof SupervisorState.State) => {
-     const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/prompts/Analyzer.txt", "utf-8")));
+    const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/prompts/Analyzer.txt", "utf-8")));
+    const formattedPrompt = await promptFromTemplate.format({ researchData: state.researchData });
 
-    const formattedPrompt = await promptFromTemplate.format({researchData: state.researchData});
-
-    const response=model.AnalyzerModel.invoke(
+    const response = await model.AnalyzerModel.invoke(
         [formattedPrompt],
         { response_format: { type: 'json_object' } }
     );
-
     const responseJson = JSON.parse(response.content as string);
 
     return {
-        keyFeatures: responseJson.keyFeatures
+        keyFeatures: responseJson.keyFeatures,
+        nextAgent: 'Supervisor'
     }
 }
 
@@ -63,20 +70,20 @@ const Writer = async (state: typeof SupervisorState.State) => {
     const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/prompts/Writer.txt", "utf-8")));
 
     const formattedPrompt = await promptFromTemplate.format({
-        query: ,
+        query: state.query,
         researchData: state.researchData,
-        keyFeatures: state.keyFeatures.join(),
+        keyFeatures: state.keyFeatures.join('\n'),
     });
 
-    const response=model.AnalyzerModel.invoke(
+    const response = await model.AnalyzerModel.invoke(
         [formattedPrompt],
         { response_format: { type: 'json_object' } }
     );
 
     const responseJson = JSON.parse(response.content as string);
-
     return {
-        finalReport: responseJson.finalReport
+        finalReport: responseJson.finalReport,
+        nextAgent: 'Supervisor'
     }
 }
 
@@ -88,13 +95,11 @@ const graph = new StateGraph(SupervisorState)
     .addNode("Supervisor", Supervisor)
     .addNode("Researcher", Researcher)
     .addNode("Analyzer", Analyzer)
-    .addNode("Writer", Writer);
+    .addNode("Writer", Writer)
+    .addEdge("__start__", "Supervisor")
+    .addConditionalEdges("Supervisor", NextAgent)
+    .addConditionalEdges("Researcher", NextAgent)
+    .addConditionalEdges("Analyzer", NextAgent)
+    .addConditionalEdges("Writer", NextAgent);
 
-graph.addEdge("__start__", "Supervisor");
-
-['Supervisor', 'Researcher', 'Analyzer', 'Writer'].forEach((node: string) => {
-  graph.addConditionalEdges(node, "NextAgent");
-});
-
-//MemorySaver?
-const SupervisorAgent = graph.compile({ checkpointer: new MemorySaver() });
+export const SupervisorAgent = graph.compile();

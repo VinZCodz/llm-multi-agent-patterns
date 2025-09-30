@@ -12,10 +12,10 @@ The raw data to analyze is:
 
 # Output Format
 Respond only with a JSON object containing the extracted key features. **Do not include any text outside the JSON object.** The key features must be an array of strings.
-{
+{{
     "keyFeatures": [
         "[Feature 1 as a string]",
         "[Feature 2 as a string]",
         "[Feature 3 as a string]"
     ]
-}
+}}

@@ -9,11 +9,10 @@ const main = async () => {
         if (userPrompt === '/bye') {
             break;
         }
-        const threadConfig = { configurable: { thread_id: "1" } };
-
-        const response = await SupervisorAgent.invoke(messages: [{ role: "user", content: userPrompt }], threadConfig);
-
-        console.log(`Assistant: ${response.messages[response.messages.length - 1].message}`);
+        const response = await SupervisorAgent.stream({ messages: [{ role: "user", content: userPrompt }] });
+        for await (const chunk of response) {
+            console.log(chunk);
+        }
     }
 }
 
