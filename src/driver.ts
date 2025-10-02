@@ -11,7 +11,7 @@ const main = async () => {
         }
         const response = await SupervisorAgent.stream({ messages: [{ role: "user", content: userPrompt }] });
         for await (const chunk of response) {
-            console.log(chunk);
+            !chunk.Writer || console.log(chunk.Writer.finalReport);
         }
     }
 }

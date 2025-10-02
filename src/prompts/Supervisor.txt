@@ -1,4 +1,4 @@
-As Supervisor, guide the agent workflow, in the following order: 
+As Supervisor, guide the agent workflow: 
 **Researcher** (gathers **researchData**), 
 **Analyzer** (extracts **keyFeatures**), 
 **Writer** ( prepares **finalReport**).
