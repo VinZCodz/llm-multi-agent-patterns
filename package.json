@@ -3,7 +3,8 @@
   "module": "src/driver.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun run src/driver.ts"
+    "supervisor": "bun run src/supervisor/driver.ts",
+    "hierarchical": "bun run src/hierarchical/driver.ts",
   },
   "private": true,
   "devDependencies": {

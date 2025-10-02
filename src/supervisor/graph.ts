@@ -9,7 +9,7 @@ import { ToolNode } from "@langchain/langgraph/prebuilt";
 const Supervisor = async (state: typeof SupervisorState.State) => {
     console.log(`\n\n------------Supervisor: Assigning Task to Next Agent--------------\n\n`);
 
-    const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/prompts/Supervisor.txt", "utf-8")));
+    const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/supervisor/prompts/Supervisor.txt", "utf-8")));
     const formattedPrompt = await promptFromTemplate.format({
         isResearchDone: !!state.researchData,
         isAnalysesDone: !!state.keyFeatures,
@@ -37,7 +37,7 @@ const Supervisor = async (state: typeof SupervisorState.State) => {
 const Researcher = async (state: typeof SupervisorState.State) => {
     console.log(`------------Researcher: Researching on User Query!--------------`);
 
-    const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/prompts/Researcher.txt", "utf-8")));
+    const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/supervisor/prompts/Researcher.txt", "utf-8")));
     const formattedPrompt = await promptFromTemplate.format({ query: state.query });
 
     const response = await model.ResearcherModel.invoke([formattedPrompt, ...state.messages]);
@@ -64,7 +64,7 @@ const Researcher = async (state: typeof SupervisorState.State) => {
 const Analyzer = async (state: typeof SupervisorState.State) => {
     console.log(`------------Analyzer: Analyzing key features!--------------`);
 
-    const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/prompts/Analyzer.txt", "utf-8")));
+    const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/supervisor/prompts/Analyzer.txt", "utf-8")));
     const formattedPrompt = await promptFromTemplate.format({ researchData: state.researchData });
 
     const response = await model.AnalyzerModel.invoke(
@@ -82,7 +82,7 @@ const Analyzer = async (state: typeof SupervisorState.State) => {
 const Writer = async (state: typeof SupervisorState.State) => {
     console.log(`------------Writer: Writing Final Report--------------\n\n`);
 
-    const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/prompts/Writer.txt", "utf-8")));
+    const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/supervisor/prompts/Writer.txt", "utf-8")));
     const formattedPrompt = await promptFromTemplate.format({
         query: state.query,
         researchData: state.researchData,
