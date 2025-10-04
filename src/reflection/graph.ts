@@ -1,12 +1,15 @@
-import { MemorySaver, StateGraph } from "@langchain/langgraph"
+import { StateGraph } from "@langchain/langgraph"
 import { ReflectionState } from "./state.ts"
 import * as model from "./model.ts"
+import { PromptTemplate } from "@langchain/core/prompts";
+import fs from "fs/promises";
+
+const MAX_REFLECTION_COUNT = 3;
 
 const Writer = async (state: typeof ReflectionState.State) => {
-    console.log(`\n\n------------Writer: Genrating--------------\n\n`);
+    console.log(`\n\n------------Writer: Generating--------------`);
 
-    if(!state.query)
-        query: state.messages.at(-1)?.content, 
+    state.query = state.query ?? state.messages.at(0)?.content;
 
     const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/reflection/prompts/writer.txt", "utf-8")));
     const formattedPrompt = await promptFromTemplate.format({
@@ -18,13 +21,14 @@ const Writer = async (state: typeof ReflectionState.State) => {
     const response = await model.GenerationModel.invoke([formattedPrompt]);
 
     return {
-        generation: response.content
+        query: state.query,
+        generation: response.content,
+        reflectionCount: state.reflectionCount ?? 0
     }
 }
 
 const isReflectionNeeded = async (state: typeof ReflectionState.State) => {
-    if (state.reflectionCount<process.env.MAX_REFLECTION_COUNT) {
-        state.reflectionCount++;
+    if (state.reflectionCount < MAX_REFLECTION_COUNT) {
         return "Critique";
     }
     else {
@@ -33,7 +37,7 @@ const isReflectionNeeded = async (state: typeof ReflectionState.State) => {
 }
 
 const Critique = async (state: typeof ReflectionState.State) => {
-    console.log(`\n\n------------Critique: Reflecting--------------\n\n`);
+    console.log(`\n\n------------Critique: Reflecting--------------`);
 
     const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/reflection/prompts/critique.txt", "utf-8")));
     const formattedPrompt = await promptFromTemplate.format({
@@ -44,7 +48,8 @@ const Critique = async (state: typeof ReflectionState.State) => {
     const response = await model.ReflectionModel.invoke([formattedPrompt]);
 
     return {
-        reflection: response.content
+        reflection: response.content,
+        reflectionCount: ++state.reflectionCount
     }
 }
 
@@ -53,7 +58,7 @@ const graph = new StateGraph(ReflectionState)
     .addNode("Critique", Critique)
     .addEdge("__start__", "Writer")
     .addConditionalEdges("Writer", isReflectionNeeded)
-    .addEdge("Critique", Writer)
+    .addEdge("Critique", "Writer");
 
 
 export const ReflectionAgent = graph.compile();

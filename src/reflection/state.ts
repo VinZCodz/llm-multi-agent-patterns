@@ -6,5 +6,5 @@ export const ReflectionState = Annotation.Root({
     query: Annotation<string>,
     generation: Annotation<string>,
     reflection: Annotation<string>,
-    reflectionCount: Annotation<int>
+    reflectionCount: Annotation<number>
 });

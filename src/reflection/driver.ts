@@ -12,8 +12,8 @@ const main = async () => {
         const stream = await ReflectionAgent.stream({ messages: [{ role: "user", content: userPrompt }] });
 
         for await (const chunk of stream) {
-  console.log(chunk.content);
-}
+            console.log(chunk);
+        }
         // for await (const chunk of stream) {
         //     !chunk.Writer || console.log(chunk.Writer.generation);
         // }

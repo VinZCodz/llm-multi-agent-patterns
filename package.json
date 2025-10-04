@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "supervisor": "bun run src/supervisor/driver.ts",
-    "hierarchical": "bun run src/hierarchical/driver.ts"
+    "hierarchical": "bun run src/hierarchical/driver.ts",
+    "reflection": "bun run src/reflection/driver.ts"
   },
   "private": true,
   "devDependencies": {
