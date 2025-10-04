@@ -1,5 +1,5 @@
 import * as readline from 'node:readline/promises';
-import { HierarchicalAgent } from "./graph.ts";
+import { ReflectionAgent } from "./graph.ts";
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
@@ -9,7 +9,7 @@ const main = async () => {
         if (userPrompt === '/bye') {
             break;
         }
-        const response = await HierarchicalAgent.stream({ messages: [{ role: "user", content: userPrompt }] });
+        const response = await ReflectionAgent.stream({ messages: [{ role: "user", content: userPrompt }] });
         for await (const chunk of response) {
             console.log();
         }

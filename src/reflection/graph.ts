@@ -1,7 +1,37 @@
-import { StateGraph } from "@langchain/langgraph"
-import { HierarchicalState } from "./state.ts"
+import { MemorySaver, StateGraph } from "@langchain/langgraph"
+import { ReflectionState } from "./state.ts"
+import * as model from "./model.ts"
 
-const graph = new StateGraph(HierarchicalState)
+const Writer = async (state: typeof ReflectionState.State) => {
+    const response = await model.GenerationModel.invoke("");
+
+    return {
+        generation: response.content
+    }
+}
+
+const Critique = async (state: typeof ReflectionState.State) => {
+
+    return {
+
+    }
+}
+
+const isReflectionDone = async (state: typeof ReflectionState.State) => {
+
+    if (true) {
+        return "Critique";
+    }
+    else {
+        return "__end__"
+    }
+}
 
 
-export const HierarchicalAgent = graph.compile();
+const graph = new StateGraph(ReflectionState)
+    .addNode("Writer", Writer)
+    .addNode("Critique", Critique)
+    .addEdge("__start__", "Writer")
+
+
+export const ReflectionAgent = graph.compile({checkpointer: new MemorySaver()});
