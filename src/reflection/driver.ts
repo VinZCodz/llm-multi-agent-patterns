@@ -5,7 +5,7 @@ const rl = readline.createInterface({ input: process.stdin, output: process.stdo
 
 const main = async () => {
     while (true) {
-        const userPrompt = await rl.question('You:\n');
+        const userPrompt = await rl.question('What you want me to write about?\n');
         if (userPrompt === '/bye') {
             break;
         }
