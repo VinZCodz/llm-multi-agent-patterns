@@ -4,7 +4,7 @@ const sendBtn = document.querySelector('#send');
 const sessionId = generateUUID();
 
 const loader = document.createElement("div");
-loader.className='flex justify-start';
+loader.className = 'flex justify-start';
 loader.textContent = "Replying...";
 
 const generate = async (text) => {
@@ -34,9 +34,9 @@ const generate = async (text) => {
     aiDiv.className = 'flex justify-start';
 
     const responseDiv = document.createElement('div');
-    responseDiv.className = 'bg-zinc-700 text-gray-100 rounded-xl rounded-tl-none p-4 shadow-lg max-w-lg';
-    responseDiv.textContent = llmResponse;
-    
+    responseDiv.className = 'bg-zinc-700 text-gray-100 rounded-xl rounded-tl-none p-4 shadow-lg max-w-lg overflow-x-auto text-wrap: wrap;';
+    responseDiv.innerHTML = marked.parse(llmResponse);
+
     loader.remove();
     aiDiv.appendChild(responseDiv);
     chatContainer.appendChild(aiDiv);
@@ -62,9 +62,9 @@ inputMsg?.addEventListener('keyup', handleEnter);
 sendBtn?.addEventListener('click', handleClick);
 
 function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random() * 16 | 0,
-      v = c == 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
 }

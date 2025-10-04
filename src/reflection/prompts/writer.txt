@@ -4,4 +4,4 @@
 
 **Action:** Compose a professional, engaging, concise response. Must directly address the **query**.
 
-**Format:** string
+**Output Format:** Strictly in Markdown, without any extra introductory or concluding text

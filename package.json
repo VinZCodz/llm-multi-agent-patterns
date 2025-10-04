@@ -1,15 +1,18 @@
 {
   "name": "llm_multi_agent",
-  "module": "src/driver.ts",
+  "module": "",
   "type": "module",
   "scripts": {
-    "supervisor": "bun run src/supervisor/driver.ts",
-    "hierarchical": "bun run src/hierarchical/driver.ts",
-    "reflection": "bun run src/reflection/driver.ts"
+    "supervisor:test": "bun run src/supervisor/driver.ts",
+    "hierarchical:test": "bun run src/hierarchical/driver.ts",
+    "reflection:test": "bun run src/reflection/driver.ts",
+    "reflection": "bun run src/reflection/server.ts"
   },
   "private": true,
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -20,6 +23,8 @@
     "@langchain/groq": "^0.2.4",
     "@langchain/langgraph": "^0.4.9",
     "@langchain/tavily": "^0.1.5",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "zod": "^4.1.11"
   }
 }
