@@ -9,14 +9,8 @@ const main = async () => {
         if (userPrompt === '/bye') {
             break;
         }
-        const stream = await ReflectionAgent.stream({ messages: [{ role: "user", content: userPrompt }] });
-
-        for await (const chunk of stream) {
-            console.log(chunk);
-        }
-        // for await (const chunk of stream) {
-        //     !chunk.Writer || console.log(chunk.Writer.generation);
-        // }
+        const response = await ReflectionAgent.invoke({ messages: [{ role: "user", content: userPrompt }] });
+        console.log(`Write Up:\n ${response.generation}`);
     }
 }
 
