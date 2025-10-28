@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "llm_multi_agent",
+      "name": "llm-multi-agent-patterns ",
       "dependencies": {
         "@langchain/community": "^0.3.56",
         "@langchain/core": "^0.3.77",
