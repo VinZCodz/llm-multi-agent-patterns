@@ -1,37 +1,38 @@
 import { StateGraph } from "@langchain/langgraph"
-import { ReflexionState } from "./state.ts"
+import { AnswerQuestion, ReflexionState } from "./state.ts"
 import * as model from "./model.ts"
 import { PromptTemplate } from "@langchain/core/prompts";
 import * as tools from "./tools.ts"
 import { ToolNode } from "@langchain/langgraph/prebuilt";
+import * as prompt from "./prompt.ts";
 
 const MAX_REFLECTION_COUNT = 3;
 
 const Responder = async (state: typeof ReflexionState.State) => {
     console.log(`\n\n------------Responder--------------`);
 
-    //state.query = state.query ?? state.messages.at(0)?.content;
+    const modelWithStructure = model.ResponderModel.withStructuredOutput(AnswerQuestion);
 
-    //const promptFromTemplate = PromptTemplate.fromTemplate((await fs.readFile("./src/reflection/prompts/writer.txt", "utf-8")));
-    //const formattedPrompt = await promptFromTemplate.format({
-    //    query: state.query,
-    //    generation: state.generation,
-    //    reflection: state.reflection
-    //});
+    const template = PromptTemplate.fromTemplate(prompt.responderPrompt);
+    const formattedTemplate = await template.format({
+        first_instruction: "Provide a detailed ~250 word answer.",
+        time: new Date()
+    });
 
-    //const response = await model.GenerationModel.invoke([formattedPrompt]);
+    const structuredOutput = await modelWithStructure.invoke([
+        { role: "system", content: formattedTemplate },
+        ...state.messages,
+        { role: "system", content: prompt.responderSummaryPrompt }
+    ]);
 
-    //return {
-    //    query: state.query,
-    //    generation: response.content,
-    //    reflectionCount: state.reflectionCount ?? 0
-    //}
+    return {
+        messages: { role: 'ai', content: JSON.stringify(structuredOutput) }
+    }
 }
-
-const tools = new ToolNode([tools.Search]);
+const tool = new ToolNode([tools.Search]);
 
 const isRevisionNeeded = async (state: typeof ReflexionState.State) => {
-    if (state.reflectionCount < MAX_REFLECTION_COUNT) {
+    if (false) {
         return "tools";
     }
     else {

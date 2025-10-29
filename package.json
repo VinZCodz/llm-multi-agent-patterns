@@ -3,10 +3,11 @@
   "module": "",
   "type": "module",
   "scripts": {
+    "reflection": "bun run src/reflection/server.ts",
     "supervisor:test": "bun run src/supervisor/driver.ts",
     "hierarchical:test": "bun run src/hierarchical/driver.ts",
     "reflection:test": "bun run src/reflection/driver.ts",
-    "reflection": "bun run src/reflection/server.ts"
+    "reflexion:test": "bun run src/reflexion/driver.ts"
   },
   "private": true,
   "devDependencies": {
