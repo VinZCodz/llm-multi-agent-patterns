@@ -10,7 +10,7 @@ const main = async () => {
             break;
         }
         const response = await ReflexionAgent.invoke({ messages: [{ role: "user", content: userPrompt }] });
-        console.log(`Write Up:\n ${response.messages}`);
+        console.log(`Write Up:\n ${response.messages.at(-1)?.content}`);
     }
 }
 

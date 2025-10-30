@@ -1,9 +1,6 @@
-import { ChatGroq } from "@langchain/groq";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 
-export const ResponderModel=new ChatGroq({
+export const ResponderModel = new ChatGoogleGenerativeAI({
     model: process.env.RESPONDER_MODEL!,
-});
-
-export const RevisorModel=new ChatGroq({
-    model: process.env.REVISOR_MODEL!,
+    maxRetries: 2,
 });

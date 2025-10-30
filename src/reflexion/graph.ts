@@ -22,7 +22,7 @@ const Responder = async (state: typeof ReflexionState.State) => {
     const structuredOutput = await modelWithStructure.invoke([
         { role: "system", content: formattedTemplate },
         ...state.messages,
-        { role: "system", content: prompt.responderSummaryPrompt }
+        //{ role: "system", content: prompt.responderSummaryPrompt }
     ]);
 
     return {
@@ -59,12 +59,12 @@ const Revisor = async (state: typeof ReflexionState.State) => {
 
 const graph = new StateGraph(ReflexionState)
     .addNode("Responder", Responder)
-    .addNode("Revisor", Revisor)
-    .addNode("tools", tools)
+    //.addNode("Revisor", Revisor)
+    //.addNode("tools", tools)
     .addEdge("__start__", "Responder")
-    .addEdge("Responder", "tools")
-    .addEdge("tools", "Revisor")
-    .addConditionalEdges("Revisor", isRevisionNeeded)
+    //.addEdge("Responder", "tools")
+    //.addEdge("tools", "Revisor")
+    //.addConditionalEdges("Revisor", isRevisionNeeded)
 
 
 export const ReflexionAgent = graph.compile();
