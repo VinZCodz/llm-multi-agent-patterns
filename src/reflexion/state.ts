@@ -3,6 +3,10 @@ import z from 'zod'
 
 export const ReflexionState = Annotation.Root({
     ...MessagesAnnotation.spec,
+
+    writeUp: Annotation<TopicWriteup>,
+    queryResults: Annotation<[]>,
+
     revisionCount: Annotation<number>
 });
 
@@ -14,21 +18,15 @@ const Reflection = z.object({
 })
     .describe("Your reflection on the initial answer");
 
-export const AnswerQuestion = z.object({
+export const TopicWriteup = z.object({
     answer: z.string()
-        .describe("~250 word detailed answer to the question"),
+        .describe("~250 word detailed answer to the topic in .md format"),
     reflection: Reflection,
     searchQueries: z.array(z.string())
-        .describe("1-3 search queries for researching improvements to address the critique of your current answer"),
-})
-    .describe("Answer the question. Provide an answer, reflection, and then follow up with search queries to improve the answer");
-
-
-export const ReviseAnswer = z.object({
-    answerQuestion: AnswerQuestion,
+        .describe("At max 3 search queries for researching improvements to address the Reflection of your current answer"),
     references: z.array(z.string())
         .describe("Citations motivating your updated answer.")
 })
-    .describe("Revise your original answer to your question. Provide an answer, reflection, cite your reflection with references, and finally add search queries to improve the answer.");
+    .describe("Answer the question. Provide an answer, reflection, and then follow up with search queries to improve the answer");
 
-export type AnswerQuestion = z.infer<typeof AnswerQuestion>;
+export type TopicWriteup = z.infer<typeof TopicWriteup>;

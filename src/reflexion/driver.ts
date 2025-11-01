@@ -5,12 +5,21 @@ const rl = readline.createInterface({ input: process.stdin, output: process.stdo
 
 const main = async () => {
     while (true) {
-        const userPrompt = await rl.question('What you want me to write about?\n');
+        const userPrompt = await rl.question('Please provide the Topic of writeup at once?\n');
         if (userPrompt === '/bye') {
             break;
         }
         const response = await ReflexionAgent.invoke({ messages: [{ role: "user", content: userPrompt }] });
-        console.log(`Write Up:\n ${response.messages.at(-1)?.content}`);
+
+        console.log('='.repeat(80));
+        console.log(`Final Write Up`);
+        console.log('='.repeat(80));
+        console.log(`\n${response.writeUp.answer}\n\n**References**:\n${response.writeUp.references}`);
+
+        // const response = await ReflexionAgent.stream({ messages: [{ role: "user", content: userPrompt }] });
+        // for await (const chunk of response) {
+        //     console.log(chunk);
+        // }
     }
 }
 

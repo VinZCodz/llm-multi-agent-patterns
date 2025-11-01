@@ -1,19 +1,18 @@
 import { TavilySearch } from "@langchain/tavily";
-import type { AnswerQuestion, ReflexionState } from "./state";
+import type { TopicWriteup, ReflexionState } from "./state";
 
 const search = new TavilySearch({ maxResults: 2 });
 
 export const runQueries = async (state: typeof ReflexionState.State) => {
     console.log(`\n\n------------Run Queries--------------`);
 
-    const answerQuestion = JSON.parse(state.messages.at(-1)?.content as string) as AnswerQuestion;
-    const searches = await search.batch(answerQuestion.searchQueries.map(query => ({ query })));
+    const searches = await search.batch(state.writeUp.searchQueries.map(query => ({ query })));
 
     const searchResults = [];
-    for (let i = 0; i < answerQuestion.searchQueries.length; i++) {
+    for (let i = 0; i < state.writeUp.searchQueries.length; i++) {
         for (const result of searches[i]?.results || []) {
             searchResults.push({
-                query: answerQuestion.searchQueries[i],
+                query: state.writeUp.searchQueries[i],
                 content: result.content || '',
                 url: result.url || '',
             });
@@ -21,6 +20,6 @@ export const runQueries = async (state: typeof ReflexionState.State) => {
     }
 
     return {
-        messages: { role: 'human', content: JSON.stringify(searchResults) }
+        queryResults: searchResults
     }
 }

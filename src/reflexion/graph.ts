@@ -1,10 +1,9 @@
 import { StateGraph } from "@langchain/langgraph"
-import { AnswerQuestion, ReflexionState, ReviseAnswer } from "./state.ts"
+import { TopicWriteup, ReflexionState } from "./state.ts"
 import * as model from "./model.ts"
 import { PromptTemplate } from "@langchain/core/prompts";
 import * as tools from "./tools.ts"
 import * as prompt from "./prompt.ts";
-import { revision } from "node:process";
 
 const MAX_REVISION_COUNT = 2;
 
@@ -13,19 +12,19 @@ const Responder = async (state: typeof ReflexionState.State) => {
 
     const template = PromptTemplate.fromTemplate(prompt.responderPrompt);
     const formattedTemplate = await template.format({
-        first_instruction: "Provide a detailed ~250 word answer.",
+        first_instruction: "Provide a detailed ~250 word answer on the topic given by the user.",
         time: new Date()
     });
 
-    const modelWithStructure = model.ResponderModel.withStructuredOutput(AnswerQuestion);
+    const modelWithStructure = model.Model.withStructuredOutput(TopicWriteup);
 
     const structuredOutput = await modelWithStructure.invoke([
         { role: "system", content: formattedTemplate },
-        ...state.messages,
+        { role: "user", content: state.messages.at(-1)?.content as string },
     ]);
 
     return {
-        messages: { role: 'ai', content: JSON.stringify(structuredOutput) },
+        writeUp: structuredOutput,
         revisionCount: 0
     }
 }
@@ -33,18 +32,24 @@ const Responder = async (state: typeof ReflexionState.State) => {
 const Revisor = async (state: typeof ReflexionState.State) => {
     console.log(`\n\n------------Revisor--------------`);
 
-    const template = PromptTemplate.fromTemplate(prompt.revisorPrompt);
-    const formattedTemplate = await template.format({ time: new Date() });
+    const template = PromptTemplate.fromTemplate(prompt.responderPrompt);
+    const formattedTemplate = await template.format({
+        first_instruction: prompt.revisorPrompt,
+        time: new Date()
+    });
 
-    const modelWithStructure = model.ResponderModel.withStructuredOutput(ReviseAnswer);
+    const modelWithStructure = model.Model.withStructuredOutput(TopicWriteup);
 
     const structuredOutput = await modelWithStructure.invoke([
         { role: "system", content: formattedTemplate },
-        ...state.messages,
+
+        { role: "user", content: state.messages.at(-1)?.content as string },
+        { role: "user", content: JSON.stringify(state.queryResults) },
+        { role: "ai", content: JSON.stringify(state.writeUp) },
     ]);
 
     return {
-        messages: { role: 'ai', content: JSON.stringify(structuredOutput) },
+        writeUp: structuredOutput,
         revisionCount: ++state.revisionCount
     }
 }
@@ -61,7 +66,7 @@ const graph = new StateGraph(ReflexionState)
 
     .addConditionalEdges("Revisor", (state: typeof ReflexionState.State) => {
         if (state.revisionCount < MAX_REVISION_COUNT) {
-            return "Revisor";
+            return "runQueries";
         }
         else {
             return "__end__";
