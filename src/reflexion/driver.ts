@@ -27,4 +27,4 @@ await main()
     .finally(() => {
         console.warn(`\nBye!\n`);
         rl.close()
-    });
+    })

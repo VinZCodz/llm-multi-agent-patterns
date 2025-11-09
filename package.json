@@ -7,7 +7,10 @@
     "supervisor:test": "bun run src/supervisor/driver.ts",
     "hierarchical:test": "bun run src/hierarchical/driver.ts",
     "reflection:test": "bun run src/reflection/driver.ts",
-    "reflexion:test": "bun run src/reflexion/driver.ts"
+    "reflexion:test": "bun run src/reflexion/driver.ts",
+    "supervisor:tool:test": "bun run src/supervisor_tooling/driver.js",
+    "supervisor:tool:cal:test": "bun run src/supervisor_tooling/calenderAgentTest.js",
+    "supervisor:tool:email:test": "bun run src/supervisor_tooling/emailAgentTest.js"
   },
   "private": true,
   "devDependencies": {
@@ -20,13 +23,14 @@
   },
   "dependencies": {
     "@langchain/community": "^0.3.56",
-    "@langchain/core": "^0.3.77",
+    "@langchain/core": "^1.0.3",
     "@langchain/google-genai": "^1.0.0",
     "@langchain/groq": "^0.2.4",
     "@langchain/langgraph": "^0.4.9",
     "@langchain/tavily": "^0.1.5",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "langchain": "^1.0.3",
     "zod": "^4.1.11"
   }
 }
