@@ -8,9 +8,9 @@
     "hierarchical:test": "bun run src/hierarchical/driver.ts",
     "reflection:test": "bun run src/reflection/driver.ts",
     "reflexion:test": "bun run src/reflexion/driver.ts",
-    "supervisor:tool:test": "bun run src/supervisor_tooling/driver.js",
-    "supervisor:tool:cal:test": "bun run src/supervisor_tooling/calenderAgentTest.js",
-    "supervisor:tool:email:test": "bun run src/supervisor_tooling/emailAgentTest.js"
+    "supervisor:tool:test": "bun run src/supervisor_hil_tool/driver.js",
+    "supervisor:tool:cal:test": "bun run src/supervisor_hil_tool/calenderAgentTest.js",
+    "supervisor:tool:email:test": "bun run src/supervisor_hil_tool/emailAgentTest.js"
   },
   "private": true,
   "devDependencies": {

@@ -56,9 +56,9 @@ export const getAllContactDetails = tool(
   async () => {
     // Stub: In practice, this would query contacts APIs
     return JSON.stringify([
-      { name: "vinz", email: "vinz@gmail.com" },
-      { name: "joez", email: "joez@gmail.com" },
-      { name: "jhonz", email: "jhonz@gmail.com" },
+      { name: "vinz", email: "vinz@gmail.com", team: 'design' },
+      { name: "joez", email: "joez@gmail.com", team:'sales' },
+      { name: "jhonz", email: "jhonz@gmail.com", team:'design' },
     ]);
   },
   {

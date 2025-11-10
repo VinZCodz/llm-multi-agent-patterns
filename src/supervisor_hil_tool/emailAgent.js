@@ -1,4 +1,4 @@
-import { createAgent } from "langchain";
+import { createAgent, humanInTheLoopMiddleware } from "langchain"; 
 import { model } from "./model";
 import { sendEmail } from "./tools";
 
@@ -14,4 +14,10 @@ export const emailAgent = createAgent({
   model: model,
   tools: [sendEmail],
   systemPrompt: EMAIL_AGENT_PROMPT,
+  middleware: [ 
+    humanInTheLoopMiddleware({ 
+      interruptOn: { send_email: true }, 
+      descriptionPrefix: "Outbound email pending approval", 
+    }), 
+  ], 
 });
