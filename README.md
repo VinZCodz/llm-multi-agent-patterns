@@ -9,5 +9,3 @@
 ## Human in Loop (HIL)
 
 <img width="1123" height="415" alt="image" src="https://github.com/user-attachments/assets/409c19ab-6e9a-4e12-bb5d-7fe810aa0d85" />
-
-
